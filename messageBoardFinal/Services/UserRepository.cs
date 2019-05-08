@@ -3,10 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using MessageBoardBackend.Core;
 using MessageBoardBackend.Models;
-using Microsoft.AspNetCore.Hosting.Internal;
 
-
-namespace messageboardBackend.Services
+namespace MessageBoardBackend.Services
 {
 
     public class UserRepository

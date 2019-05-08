@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using messageboardBackend.Services;
 using MessageBoardBackend.Models;
+using MessageBoardBackend.Services;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Logging;
@@ -54,16 +55,14 @@ namespace MessageBoardBackend.Controllers
         private JwtPacket CreateJwtPacket(User user)
         {
                 var jwtTokenHandler = new JwtSecurityTokenHandler();
-                IdentityModelEventSource.ShowPII = true;
 
                 var claims = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.Email, user.Email)
                 });
                 const string securityKeyString = "KoHzAdIhOsSeIn is My secret Key";
-//                const string securityKeyString = "12345";
                 var securityKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(securityKeyString));
-                var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256Signature);
+                var signingCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
                 var token = jwtTokenHandler.CreateJwtSecurityToken(subject: claims,
                     signingCredentials: signingCredentials);
@@ -72,5 +71,38 @@ namespace MessageBoardBackend.Controllers
 
                 return new JwtPacket {Token = tokenString, FirstName = user.FirstName};
         }
+
+//        private JwtPacket CreateJwtPacketTest(User user)
+//        {
+//            IdentityModelEventSource.ShowPII = true;
+//            var secretKey = Encoding.UTF8.GetBytes("KoHzAdIhOsSeIn is My secret Key"); // must be 16 character or longer
+//            var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(secretKey), SecurityAlgorithms.HmacSha256Signature);
+//
+//            var encryptionkey = Encoding.UTF8.GetBytes("16CharEncryptKey"); //must be 16 character
+//            var encryptingCredentials = new EncryptingCredentials(new SymmetricSecurityKey(encryptionkey), SecurityAlgorithms.Aes128KW, SecurityAlgorithms.Aes128CbcHmacSha256);
+//
+//            var claims = new List<Claim>
+//            {
+//                new Claim(ClaimTypes.Name, user.Email), //user.UserName
+//                new Claim(ClaimTypes.NameIdentifier,user.Id.ToString()), //user.Id
+//            };
+//
+//            var descriptor = new SecurityTokenDescriptor
+//            {
+////                Issuer = _siteSetting.JwtSettings.Issuer,
+////                Audience = _siteSetting.JwtSettings.Audience,
+//                IssuedAt = DateTime.Now,
+//                NotBefore = DateTime.Now.AddMinutes(5),
+//                Expires = DateTime.Now.AddMinutes(10),
+//                SigningCredentials = signingCredentials,
+//                EncryptingCredentials = encryptingCredentials,
+//                Subject = new ClaimsIdentity(claims)
+//            };
+//
+//            var tokenHandler = new JwtSecurityTokenHandler();
+//            var securityToken = tokenHandler.CreateToken(descriptor);
+//            string encryptedJwt = tokenHandler.WriteToken(securityToken);
+//            return new JwtPacket { Token = encryptedJwt, FirstName = user.FirstName };
+//        }
     }
 }
